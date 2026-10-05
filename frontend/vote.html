@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Voting — AnonVote</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <img src="assets/anonvote-logo-dark.png" class="navbar-logo navbar-logo-dark" alt="AnonVote logo">
+            <img src="assets/anonvote-logo-light.png" class="navbar-logo navbar-logo-light" alt="AnonVote logo">
+            <span class="brand-text" data-text="AnonVote">AnonVote</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="results.html" class="nav-link">Live Results</a>
+            <button id="themeToggleBtn" class="theme-toggle-btn">🌙 Dark Mode</button>
+        </div>
+    </nav>
+
+    <main class="narrow-container">
+        <!-- Event Header Card -->
+        <div class="card" id="eventHeaderCard">
+            <div class="form-group">
+                <label class="form-label" for="voteEventSelect">Select Active Event</label>
+                <select id="voteEventSelect" class="form-select">
+                    <option value="">Loading events...</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                <div>
+                    <span id="eventStatusBadge" class="badge badge-active">Loading...</span>
+                    <h1 id="eventName" style="margin-top: 0.5rem;">Loading Event...</h1>
+                    <p id="eventDescription" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Toast / Message Box -->
+        <div id="statusToastContainer"></div>
+
+        <!-- Participant Voting Form -->
+        <div class="card" id="votingSection">
+            <h3>Select Participant</h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
+                Tap on one participant to select your choice. Anonymous device validation active.
+            </p>
+
+            <div id="participantList" class="participant-grid">
+                <!-- Participant cards injected by JS -->
+                <p style="color: var(--text-muted);">Loading participants...</p>
+            </div>
+
+            <button id="submitVoteBtn" class="btn btn-primary btn-full" disabled style="margin-top: 1rem;">
+                Select a Participant
+            </button>
+        </div>
+    </main>
+
+    <!-- Confirm Vote Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Confirm Your Vote</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                Are you sure you want to cast your vote for <strong id="modalParticipantName" style="color: var(--text-main);"></strong>?
+                <br><br>
+                <em>Note: Your vote is anonymous and cannot be changed after submission.</em>
+            </p>
+            <div style="display: flex; gap: 1rem;">
+                <button id="cancelVoteBtn" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                <button id="confirmVoteBtn" class="btn btn-success" style="flex: 1;">Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>AnonVote Anonymous Mobile Voting &copy; 2026</p>
+    </footer>
+
+    <script src="js/themeToggle.js"></script>
+    <script src="js/shuffleLogo.js"></script>
+    <script src="js/runtimeGuard.js"></script>
+    <script src="js/eventSelector.js"></script>
+    <script src="js/vote.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Leaderboard — AnonVote</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <img src="assets/anonvote-logo-dark.png" class="navbar-logo navbar-logo-dark" alt="AnonVote logo">
+            <img src="assets/anonvote-logo-light.png" class="navbar-logo navbar-logo-light" alt="AnonVote logo">
+            <span class="brand-text" data-text="AnonVote">AnonVote</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">— Official Results</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="vote.html" class="nav-link">Audience Vote</a>
+            <a href="admin.html" class="nav-link">Admin</a>
+            <button id="themeToggleBtn" class="theme-toggle-btn">🌙 Dark Mode</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Event Leaderboard Header -->
+        <div class="card" style="text-align: center; margin-bottom: 2.5rem;">
+            <div style="max-width: 420px; margin: 0 auto 1.25rem; text-align: left;">
+                <label class="form-label" for="resultsEventSelect">Select Event</label>
+                <select id="resultsEventSelect" class="form-select">
+                    <option value="">Loading events...</option>
+                </select>
+            </div>
+            <span id="resultsStatusBadge" class="badge badge-active">Live Results</span>
+            <h1 id="resultsEventName" style="margin-top: 0.5rem;">Loading Leaderboard...</h1>
+            <p id="resultsEventDesc" style="color: var(--text-muted); font-size: 1rem; margin-top: 0.25rem;"></p>
+            
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.25rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--text-muted);">
+                <span>⚖️ <strong>Judge Weight:</strong> 33.33%</span>
+                <span>🗳️ <strong>Audience Weight:</strong> 66.67%</span>
+                <span>📊 <strong id="totalAudienceVotesVal">0</strong> Total Audience Votes</span>
+            </div>
+        </div>
+
+        <!-- Winner Podium Section (Top 3) -->
+        <div id="podiumSection" class="podium-container">
+            <!-- Podium cards injected by JS -->
+        </div>
+
+        <!-- Complete Standings Table -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                <h3>Official Standings & Score Breakdown</h3>
+                <span id="autoRefreshIndicator" style="font-size: 0.8rem; color: var(--accent-cyan); display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);"></span>
+                    Auto-refreshing live
+                </span>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Participant</th>
+                            <th>Judge Score (33.33%)</th>
+                            <th>Audience Votes</th>
+                            <th>Audience Score (66.67%)</th>
+                            <th style="color: var(--accent-cyan);">Final Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingsTableBody">
+                        <!-- Table rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>AnonVote Formula: Final Score = (Normalized Judge Score × 0.3333) + (Normalized Audience Score × 0.6667)</p>
+    </footer>
+
+    <script src="js/themeToggle.js"></script>
+    <script src="js/shuffleLogo.js"></script>
+    <script src="js/runtimeGuard.js"></script>
+    <script src="js/eventSelector.js"></script>
+    <script src="js/results.js"></script>
+</body>
+</html>
