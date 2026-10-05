@@ -15,6 +15,7 @@ const resultsRoutes = require('./routes/results');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isVercel = Boolean(process.env.VERCEL);
 
 // Security & Parsing Middleware
 app.use(cors({
@@ -32,9 +33,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: false, // Set to true if HTTPS
+        secure: false,
         sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
@@ -79,8 +80,12 @@ async function startServer() {
     });
 }
 
-if (require.main === module) {
+if (require.main === module && !isVercel) {
     startServer();
+} else if (isVercel) {
+    seedDatabase().catch((err) => {
+        console.error('Database seed failed on startup:', err);
+    });
 }
 
 module.exports = app;
