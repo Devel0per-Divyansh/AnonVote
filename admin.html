@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — AnonVote</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">⚡</div>
+            <span class="brand-text" data-text="AnonVote">AnonVote</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">— Admin Control Center</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <span id="adminUserInfo" style="color: var(--accent-pink); font-weight: 600; font-size: 0.9rem;"></span>
+            <button id="adminLogoutBtn" class="btn btn-secondary btn-sm" style="display: none;">Logout</button>
+            <button id="themeToggleBtn" class="theme-toggle-btn">🌙 Dark Mode</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Login Section (Shown if not logged in) -->
+        <div id="loginSection" class="narrow-container card">
+            <h2 style="margin-bottom: 0.5rem; text-align: center;">⚙️ Admin Login</h2>
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Authorized personnel portal for managing cultural events.
+            </p>
+
+            <div id="loginToast"></div>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="adminUsername" class="form-input" placeholder="e.g. admin" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="adminPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login to Admin Portal</button>
+            </form>
+
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--bg-card-border); text-align: center;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Quick Demo Fill:</p>
+                <button class="btn btn-secondary btn-sm" onclick="quickFillAdmin('admin', 'admin123')">Fill Admin (admin / admin123)</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard Section (Shown if logged in) -->
+        <div id="adminDashboardSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2>Event Control & Monitoring</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Manage events, participants, judges, QR codes, and lock results.</p>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="createEventBtn" class="btn btn-primary">+ Create New Event</button>
+                    <button id="addJudgeBtn" class="btn btn-secondary">+ Add New Judge</button>
+                </div>
+            </div>
+
+            <div id="toastContainer"></div>
+
+            <!-- Dashboard Stats Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.25rem;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Total Events</span>
+                    <div id="statTotalEvents" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                </div>
+                <div class="card" style="padding: 1.25rem;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Active Voting Events</span>
+                    <div id="statActiveEvents" style="font-size: 1.8rem; font-weight: 800; color: var(--accent-green);">0</div>
+                </div>
+                <div class="card" style="padding: 1.25rem;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Total Audience Votes</span>
+                    <div id="statTotalVotes" style="font-size: 1.8rem; font-weight: 800; color: var(--accent-cyan);">0</div>
+                </div>
+            </div>
+
+            <!-- Event List Grid / Cards -->
+            <div id="eventListContainer">
+                <div class="card">
+                    <p style="color: var(--text-muted);">Loading events...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Event Modal -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="eventModalTitle">Create Cultural Event</h3>
+                <button class="close-btn" id="closeEventModalBtn">&times;</button>
+            </div>
+            <form id="eventForm">
+                <input type="hidden" id="editEventId">
+                <div class="form-group">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" id="eventNameInput" class="form-input" placeholder="e.g. Dance Battle 2026" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="eventDescInput" class="form-textarea" rows="2" placeholder="Brief event description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="eventStatusInput" class="form-select">
+                        <option value="active">Active (Voting Open)</option>
+                        <option value="draft">Draft (Voting Not Started)</option>
+                        <option value="voting_closed">Voting Closed</option>
+                        <option value="results_locked">Results Locked</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="cancelEventModalBtn" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manage Participants Modal -->
+    <div class="modal-overlay" id="participantModal">
+        <div class="modal" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3>Manage Participants — <span id="participantModalEventName" style="color: var(--accent-cyan);"></span></h3>
+                <button class="close-btn" id="closeParticipantModalBtn">&times;</button>
+            </div>
+            
+            <form id="addParticipantForm" style="margin-bottom: 1.5rem; background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: var(--radius-md);">
+                <h4 style="margin-bottom: 0.75rem; font-size: 0.95rem;">+ Add New Participant / Team</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <input type="text" id="pNameInput" class="form-input" placeholder="Team/Participant Name" required>
+                    <input type="text" id="pDescInput" class="form-input" placeholder="Genre / Details">
+                </div>
+                <button type="submit" class="btn btn-success btn-sm" style="width: 100%;">Add Participant</button>
+            </form>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantTableBody">
+                        <!-- Injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Judges Modal -->
+    <div class="modal-overlay" id="judgeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Assign Judges to Event — <span id="judgeModalEventName" style="color: var(--accent-cyan);"></span></h3>
+                <button class="close-btn" id="closeJudgeModalBtn">&times;</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">Select judges to assign to this event:</p>
+
+            <form id="assignJudgesForm">
+                <div id="judgeCheckboxContainer" style="margin-bottom: 1.5rem; max-height: 200px; overflow-y: auto;">
+                    <!-- Checkboxes injected by JS -->
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Save Judge Assignments</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Judge User Modal -->
+    <div class="modal-overlay" id="createJudgeUserModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Judge Credentials</h3>
+                <button class="close-btn" id="closeCreateJudgeUserModalBtn">&times;</button>
+            </div>
+            <form id="createJudgeUserForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="newJudgeName" class="form-input" placeholder="e.g. Prof. R. Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="newJudgeUsername" class="form-input" placeholder="e.g. judge3" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="newJudgePassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-full">Create Judge Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event QR Code Display Modal -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal" style="text-align: center;">
+            <div class="modal-header">
+                <h3 id="qrModalEventName">Event QR Code</h3>
+                <button class="close-btn" id="closeQrModalBtn">&times;</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                Display or print this QR code for audience mobile voting scan.
+            </p>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); display: inline-block; margin-bottom: 1rem;">
+                <img id="qrImage" src="" alt="Event QR Code" style="width: 220px; height: 220px; display: block;">
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--accent-cyan); word-break: break-all; margin-bottom: 1rem;" id="qrTargetUrl"></p>
+            <button class="btn btn-secondary btn-full" id="copyQrUrlBtn">Copy Voting Link</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>AnonVote Admin Control &copy; 2026</p>
+    </footer>
+
+    <script src="js/themeToggle.js"></script>
+    <script src="js/shuffleLogo.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
